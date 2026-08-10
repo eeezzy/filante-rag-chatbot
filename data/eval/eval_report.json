@@ -1,0 +1,384 @@
+{
+  "summary": {
+    "n_examples": 40,
+    "retrieval": {
+      "recall_at_k": {
+        "1": 0.7,
+        "3": 0.85,
+        "5": 0.9
+      },
+      "mrr": 0.775
+    },
+    "generation": {
+      "answerable_rate": 1.0,
+      "avg_faithfulness": 4.9,
+      "avg_relevancy": 4.95,
+      "avg_faithfulness_safety_only": 4.894736842105263,
+      "n_safety_examples": 19
+    }
+  },
+  "generation_rows": [
+    {
+      "question": "차량 사용설명서에서 헤드램프 전구 교체 방법은 몇 페이지에서 확인할 수 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "고속도로 주행 중 사고가 발생했을 때 어떤 순서로 대처해야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "엔진 시동을 걸거나 변속 레버를 조작할 때 지켜야 할 안전 수칙은 무엇인가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "주유 후 연료캡을 잠갔는데도 엔진 경고등이 계속 켜져 있으면 어떻게 해야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "로드리미터는 어떤 기능을 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "뒷좌석 안전벨트를 해제한 상태로 주행하다가 속도가 10km/h 이하로 줄었다가 다시 올라가면 어떻게 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "후석 승객 알림 시스템은 도어 잠금 후 얼마 동안 실내 움직임을 감지하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "시트 위치 조절 스위치를 짧은 시간에 여러 번 누르면 어떻게 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "테일게이트를 조작할 때 전동 리프터를 손으로 잡고 조작해도 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "주간 모드에서 주행 중에 미등을 끄고 싶은데 왜 꺼지지 않나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "하이패스 시스템이 장착된 중고차를 구매했을 때 어떻게 해야 정상적으로 하이패스 기능을 사용할 수 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 4,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "주행 중 자동 잠금 기능은 차량 속도가 몇 km/h가 되면 작동하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "하이패스 카드 잔액을 확인하고 싶은데 어떻게 해야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "헤드업 디스플레이(HUD)를 청소할 때 어떤 방법으로 해야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 4,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "하이브리드 차량의 구동 배터리에서 화재가 발생했을 때 어떻게 대처해야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "스마트키로 원격 시동을 거는 방법은 무엇인가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "캐니스터는 어떤 역할을 하는 장치인가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "앞유리에 금이 가거나 왜곡이 생긴 경우 어떻게 해야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "사각지대 경보 기능은 어떤 상황에서 정확하게 작동하지 않을 수 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "어댑티브 크루즈 컨트롤을 비활성화한 후, 다시 활성화하면 이전에 설정했던 속도로 자동 복원되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "Active Driver Assist 시스템을 활성화하려면 변속 레버와 안전벨트는 어떤 상태여야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 4,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "Active Driver Assist 시스템 작동 중에 앞 차량이 갑자기 브레이크를 밟으면 어떻게 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "차선 이탈 방지 보조 시스템 아이콘이 파란색으로 표시되는 경우는 무엇을 의미하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "주차 보조 시스템의 초음파 센서가 감지할 수 없는 작은 물체의 크기 기준은 어떻게 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "차로 중앙유지보조 시스템 화면에서 차선이 빨간색으로 표시되는 경우는 어떤 의미인가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "전방, 측방, 후방 주차 초음파 센서가 감지할 수 있는 최대 거리는 각각 얼마인가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "Active Driver Assist 시스템은 어떤 센서들을 사용하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 4,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "어댑티브 크루즈 컨트롤 시스템이 작동 중일 때 운전자가 가속 페달을 밟으면 어떻게 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "사각지대 경보(BSW) 표시등이 적색으로 켜졌을 때는 어떤 상태를 의미하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "차량이 잠긴 상태로 창문이 열려 있으면 자동으로 닫히는 기능이 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "파워 아웃렛에는 최대 몇 W까지의 전기 제품을 연결해서 사용할 수 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "차량 시동을 끄고 오래 주차해두면 자동으로 환기가 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "벨트나 호스, 부츠 같은 고무 부품을 점검하지 않고 계속 사용하면 어떤 문제가 발생할 수 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "하이브리드 차량의 엔진오일 및 오일 필터는 몇 km마다 교환해야 하나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 4,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "운전석 바닥 매트를 세탁한 후 다시 장착할 때 주의해야 할 점은 무엇인가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "경음기(혼)에 연결된 퓨즈의 번호와 용량은 어떻게 되나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 4,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "스마트키를 영하 20°C 이하의 환경에 장시간 노출시키면 어떤 문제가 발생할 수 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": true
+    },
+    {
+      "question": "LED 번호판등이 고장 났을 때 직접 교체할 수 있나요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "이 차량의 축거(wheelbase)는 몇 mm인가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    },
+    {
+      "question": "정기 점검을 받지 않아서 엔진에 이상음이 생긴 경우에도 보증수리가 가능한가요?",
+      "answerable": true,
+      "expected_answerable": true,
+      "faithfulness_score": 5,
+      "relevancy_score": 5,
+      "contains_safety_warning": false
+    }
+  ],
+  "retrieval_ranks": [
+    3,
+    4,
+    null,
+    1,
+    1,
+    1,
+    2,
+    1,
+    1,
+    1,
+    1,
+    null,
+    1,
+    1,
+    1,
+    1,
+    1,
+    4,
+    1,
+    1,
+    1,
+    1,
+    2,
+    3,
+    1,
+    1,
+    1,
+    null,
+    1,
+    3,
+    1,
+    1,
+    1,
+    1,
+    1,
+    null,
+    1,
+    2,
+    1,
+    1
+  ]
+}

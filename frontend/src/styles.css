@@ -1,0 +1,332 @@
+@import "@fontsource/ibm-plex-sans-kr/400.css";
+@import "@fontsource/ibm-plex-sans-kr/500.css";
+@import "@fontsource/ibm-plex-sans-kr/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+:root {
+  /* Color — automotive instrument-cluster palette. Amber is the single
+     interactive accent (dashboard telltale). Red is reserved exclusively
+     for genuine safety warnings, never decoration, so color itself carries
+     meaning. */
+  --bg: #14171c;
+  --surface: #1b2028;
+  --surface-raised: #252b35;
+  --border: #2e3540;
+  --text-primary: #edeef0;
+  --text-secondary: #8a93a3;
+  --text-tertiary: #5c6472;
+  --accent: #e8a33d;
+  --accent-strong: #f4b85a;
+  --danger: #e05a5a;
+  --danger-bg: rgba(224, 90, 90, 0.1);
+
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.app {
+  max-width: 760px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Header ---------- */
+
+.header {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.header__mark {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+}
+
+.header__mark span {
+  color: var(--accent);
+}
+
+.header__subtitle {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+/* ---------- Messages ---------- */
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.messages__empty {
+  margin: auto;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+  max-width: 30ch;
+  line-height: 1.8;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  max-width: 88%;
+  animation: rise 0.25s ease-out;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message--user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.message--user .message__bubble {
+  background: var(--surface-raised);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+}
+
+.message--assistant {
+  align-self: flex-start;
+  width: 100%;
+}
+
+.message--assistant .message__bubble {
+  border-left: 2px solid var(--accent);
+  padding-left: 0.9rem;
+}
+
+.message--assistant.message--safety .message__bubble {
+  border-left-color: var(--danger);
+}
+
+.message__safety-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  margin-bottom: 0.5rem;
+  width: fit-content;
+}
+
+.message__text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.message__text p {
+  margin: 0 0 0.85em;
+}
+
+.message__text p:last-child {
+  margin-bottom: 0;
+}
+
+.message__text strong {
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.message__text ul {
+  margin: 0 0 0.85em;
+  padding-left: 1.2em;
+}
+
+.message__text li {
+  margin-bottom: 0.3em;
+}
+
+/* ---------- Citation chips (signature element) ---------- */
+
+.citations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.citation-chip {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 3px 3px 0 0;
+  background: var(--surface);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.55rem;
+  cursor: default;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.citation-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+}
+
+.citation-chip__page {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ---------- Input bar ---------- */
+
+.composer {
+  flex: none;
+  display: flex;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem 1.35rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.composer__input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+  resize: none;
+  max-height: 7lh;
+}
+
+.composer__input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.composer__input:focus-visible {
+  border-color: var(--accent);
+}
+
+.composer__send {
+  flex: none;
+  width: 2.75rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: #1a1305;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.composer__send:hover:not(:disabled) {
+  background: var(--accent-strong);
+}
+
+.composer__send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  .header {
+    padding: 1rem 1rem 0.85rem;
+  }
+  .messages {
+    padding: 1rem;
+  }
+  .composer {
+    padding: 0.85rem 1rem 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .message {
+    animation: none;
+  }
+  .cursor {
+    animation: none;
+    opacity: 1;
+  }
+  .citation-chip {
+    transition: none;
+  }
+}
