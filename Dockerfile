@@ -10,7 +10,7 @@ WORKDIR /app
 
 # FlagEmbedding depends on torch, and a plain `pip install` resolves the
 # default PyPI wheel — which bundles ~1GB+ of NVIDIA CUDA libraries meant
-# for GPU machines. Completely wasted on a CPU-only Fly.io VM, and the
+# for GPU machines. Completely wasted on a CPU-only Cloud Run instance, and the
 # actual cause of a build that looked like a flaky network timeout but was
 # really just downloading gigabytes it didn't need. Installing the CPU-only
 # build explicitly first keeps pip's resolver from ever reaching for it.
@@ -52,4 +52,12 @@ EXPOSE 8000
 # --workers 1: Qdrant's local on-disk mode is single-process (see
 # vector_store.py) — a real high-traffic deployment would move Qdrant to
 # a server and could then scale workers.
-CMD ["uvicorn", "filante_rag.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+#
+# Shell-form CMD (not exec-form array) so $PORT actually expands: Cloud Run
+# injects its own PORT env var (8080) and requires the container to listen
+# on it dynamically — a hardcoded port fails deployment. Defaults to 8000
+# to match every other environment (local dev, Docker Compose, Fly.io)
+# that doesn't set PORT at all. `exec` replaces the shell process with
+# uvicorn (instead of running as its child) so SIGTERM — how Cloud Run
+# signals graceful shutdown/scale-down — reaches uvicorn directly.
+CMD exec uvicorn filante_rag.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1
