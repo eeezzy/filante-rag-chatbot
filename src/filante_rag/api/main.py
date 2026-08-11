@@ -7,6 +7,7 @@ would move Qdrant to a server and could then scale workers freely.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import secrets
 import uuid
@@ -48,6 +49,37 @@ async def verify_api_key(x_api_key: str = Header(default="")) -> None:
         )
     if not secrets.compare_digest(x_api_key, settings.api_shared_secret):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or missing API key")
+
+
+KEEPALIVE_INTERVAL_SECONDS = 5.0
+
+
+async def _with_keepalive(source: AsyncIterator[str]) -> AsyncIterator[str]:
+    """Injects an SSE comment (ignored by clients) if `source` goes quiet
+    for more than KEEPALIVE_INTERVAL_SECONDS — e.g. during condense +
+    retrieval, before the first generated token exists to send. Paired
+    with the leading padding comment in event_source(): padding gets a
+    proxy to start flushing, regular small writes are what keeps it
+    flushing instead of re-buffering during a quiet stretch.
+    """
+    aiter = source.__aiter__()
+    pending: asyncio.Task | None = None
+    try:
+        while True:
+            if pending is None:
+                pending = asyncio.ensure_future(aiter.__anext__())
+            try:
+                item = await asyncio.wait_for(asyncio.shield(pending), timeout=KEEPALIVE_INTERVAL_SECONDS)
+            except asyncio.TimeoutError:
+                yield ": keepalive\n\n"
+                continue
+            except StopAsyncIteration:
+                return
+            pending = None
+            yield item
+    finally:
+        if pending is not None:
+            pending.cancel()
 
 
 class BodySizeLimitMiddleware(BaseHTTPMiddleware):
@@ -120,6 +152,18 @@ async def chat_stream(req: ChatRequest) -> StreamingResponse:
     session_id = req.session_id or str(uuid.uuid4())
 
     async def event_source() -> AsyncIterator[str]:
+        # Cloud Run's front-end proxy has been observed (empirically, via
+        # repeated live tests) to intermittently buffer the *entire*
+        # response — even with Cache-Control: no-transform set — and only
+        # flush it once at the end or after a long delay, defeating SSE
+        # entirely for roughly 2 of 3 requests in testing. A leading
+        # padding comment is a well-established workaround for exactly
+        # this class of proxy-buffering behavior: many proxies only start
+        # actively flushing once enough bytes have been written, so
+        # padding past that threshold up front forces streaming to begin
+        # immediately instead of waiting to accumulate a full buffer.
+        # SSE comment lines (leading ":") are ignored by clients.
+        yield f": {' ' * 2048}\n\n"
         yield f"data: {json.dumps({'type': 'session', 'session_id': session_id})}\n\n"
         async for event in pipeline.ask_stream(session_id, req.message):
             payload = {"type": event.type, "text": event.text}
@@ -136,4 +180,17 @@ async def chat_stream(req: ChatRequest) -> StreamingResponse:
                 payload["has_safety_warning"] = event.has_safety_warning
             yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
-    return StreamingResponse(event_source(), media_type="text/event-stream")
+    return StreamingResponse(
+        _with_keepalive(event_source()),
+        media_type="text/event-stream",
+        # Cloud Run's front-end transparently gzip-compresses responses
+        # when the client sends Accept-Encoding (every browser, always) —
+        # confirmed live: curl without that header streamed fine, curl
+        # *with* it (matching what a browser sends) hung for 60s with zero
+        # bytes received, reproducing the exact hang seen in the browser.
+        # Compression needs to buffer to be effective, which defeats SSE's
+        # whole "flush immediately" premise. `no-transform` is the
+        # standards-compliant instruction to intermediate proxies not to
+        # alter the response body at all.
+        headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"},
+    )

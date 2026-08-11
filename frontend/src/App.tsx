@@ -62,7 +62,8 @@ export default function App() {
           });
         }
       }
-    } catch {
+    } catch (err) {
+      console.error("[App] handleSend error:", err);
       updateLast({
         text: "연결 중 오류가 발생했습니다. 잠시 후 다시 시도해 주십시오.",
         isStreaming: false,
