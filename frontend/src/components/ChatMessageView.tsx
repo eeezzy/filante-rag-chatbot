@@ -35,7 +35,7 @@ export function ChatMessageView({
         {isAssistant && message.hasSafetyWarning && (
           <span className="message__safety-tag">{LOCALES[language].safetyTag}</span>
         )}
-        <div className="message__text">
+        <div className={`message__text${isAssistant ? "" : " message__text--plain"}`}>
           {isAssistant ? (
             <ReactMarkdown>{displayText}</ReactMarkdown>
           ) : (

@@ -20,7 +20,12 @@ export function Composer({ disabled, language, onSend }: ComposerProps) {
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
+    // The Enter that confirms an IME composition (Korean, Japanese, etc.)
+    // also fires a keydown with key "Enter" — submitting on that keystroke
+    // clears the textarea before the composed character is committed, so
+    // it's left behind. isComposing (and the legacy keyCode 229 fallback
+    // some browsers still use) distinguishes the two.
+    if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing && event.keyCode !== 229) {
       event.preventDefault();
       submit();
     }

@@ -200,8 +200,16 @@ textarea {
 }
 
 .message__text {
-  white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* User messages are plain text (no markdown parsing), so line breaks the
+   user typed need to survive as literal newlines. Assistant messages go
+   through ReactMarkdown, which already emits real <p>/<li> elements with
+   their own margins — inheriting pre-wrap there would also preserve the
+   model's internal soft line breaks as extra blank lines. */
+.message__text--plain {
+  white-space: pre-wrap;
 }
 
 .cursor {
