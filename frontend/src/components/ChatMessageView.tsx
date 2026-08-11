@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import type { ChatMessage, Language } from "../types";
 import { CitationChip } from "./CitationChip";
+import { DiagramImages } from "./DiagramImages";
 import { LOCALES } from "../locales";
 
 // The citation footer chips already surface source/page info, so the
@@ -42,6 +43,9 @@ export function ChatMessageView({
           )}
           {message.isStreaming && <span className="cursor" aria-hidden="true" />}
         </div>
+        {isAssistant && !message.isStreaming && (
+          <DiagramImages sources={message.sources} alt={LOCALES[language].diagramAlt} />
+        )}
         {message.sources.length > 0 && (
           <div className="citations">
             {message.sources.map((source) => (

@@ -43,6 +43,7 @@ class CitedSource:
     section_title: str | None
     printed_page_start: int | None
     printed_page_end: int | None
+    diagram_pdf_pages: list[int] = field(default_factory=list)
 
 
 @dataclass
@@ -200,6 +201,7 @@ class StreamingPipeline:
                     section_title=r.payload.get("section_title"),
                     printed_page_start=r.payload.get("printed_page_start"),
                     printed_page_end=r.payload.get("printed_page_end"),
+                    diagram_pdf_pages=r.payload.get("diagram_pdf_pages") or [],
                 )
                 for n, r in zip(cited_numbers, cited_results)
             ]

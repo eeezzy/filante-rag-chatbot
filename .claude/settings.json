@@ -12,10 +12,20 @@
       "Bash(echo \"pid $!\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5173/)",
       "Bash(rm -f /tmp/lang_*.png)",
-      "Bash(rm -f /tmp/final_en_prod.png *)"
+      "Bash(rm -f /tmp/final_en_prod.png *)",
+      "Bash(docker version *)",
+      "Bash(open -a Docker)",
+      "Bash(break)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:8000/docs)",
+      "Bash(python3 /Users/ichen22/.claude/plugins/cache/anthropic-agent-skills/example-skills/575462609294/skills/webapp-testing/scripts/with_server.py --help)",
+      "Bash(python3 /Users/ichen22/.claude/plugins/cache/anthropic-agent-skills/example-skills/575462609294/skills/webapp-testing/scripts/with_server.py --server 'npm run dev' --port 5173 -- python3 /tmp/test_diagram_images.py)",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(jobs)"
     ],
     "additionalDirectories": [
-      "/private/tmp"
+      "/private/tmp",
+      "/tmp"
     ]
   }
 }

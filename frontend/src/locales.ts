@@ -11,6 +11,7 @@ export interface Locale {
   sendLabel: string;
   safetyTag: string;
   connectionError: string;
+  diagramAlt: string;
 }
 
 export const LOCALES: Record<Language, Locale> = {
@@ -22,6 +23,7 @@ export const LOCALES: Record<Language, Locale> = {
     sendLabel: "질문 보내기",
     safetyTag: "⚠ 안전 관련 안내 포함",
     connectionError: "연결 중 오류가 발생했습니다. 잠시 후 다시 시도해 주십시오.",
+    diagramAlt: "설명서 도해",
   },
   en: {
     subtitle: "Vehicle Manual Assistant",
@@ -31,5 +33,6 @@ export const LOCALES: Record<Language, Locale> = {
     sendLabel: "Send question",
     safetyTag: "⚠ Contains safety-related guidance",
     connectionError: "A connection error occurred. Please try again in a moment.",
+    diagramAlt: "Manual diagram",
   },
 };

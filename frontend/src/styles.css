@@ -281,6 +281,38 @@ textarea {
   font-weight: 500;
 }
 
+/* ---------- Diagram images ---------- */
+
+.diagram-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.diagram-image {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  overflow: hidden;
+  max-width: 260px;
+}
+
+.diagram-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.diagram-image figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  padding: 0.4rem 0.55rem;
+  border-top: 1px solid var(--border);
+}
+
 /* ---------- Input bar ---------- */
 
 .composer {
@@ -344,6 +376,9 @@ textarea {
   }
   .composer {
     padding: 0.85rem 1rem 1.1rem;
+  }
+  .diagram-image {
+    max-width: 100%;
   }
 }
 

@@ -176,6 +176,7 @@ async def chat_stream(req: ChatRequest) -> StreamingResponse:
                         "section_title": s.section_title,
                         "printed_page_start": s.printed_page_start,
                         "printed_page_end": s.printed_page_end,
+                        "diagram_pdf_pages": s.diagram_pdf_pages,
                     }
                     for s in event.cited_sources
                 ]
