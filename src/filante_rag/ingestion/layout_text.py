@@ -9,6 +9,7 @@ chunk rather than triggering any extra extraction step.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 import fitz
@@ -18,6 +19,22 @@ import fitz
 IMAGE_AREA_RATIO_THRESHOLD = 0.35
 SPARSE_BLOCK_COUNT = 5
 COLUMN_BAND_GAP = 15.0  # pts; gap between blocks' x-ranges to start a new band
+
+# A second, independent signal from is_diagram_page: some pages (e.g. the
+# AC control legend on printed page 187) carry a *smaller* embedded photo
+# alongside a full column of body text, so their image-area ratio never
+# clears IMAGE_AREA_RATIO_THRESHOLD even though the photo is exactly the
+# kind of numbered-button diagram a reader needs. What's distinctive about
+# them isn't page composition, it's a run of short "<number> <label>"
+# legend lines (e.g. "11 AC MAX 기능 (최대 냉방)") — the same shape a
+# callout list always takes in this manual, regardless of what else is on
+# the page. Unlike is_diagram_page, this does NOT exclude the page's text
+# from the chunk — the page is a real content page that happens to also
+# have a worthwhile photo.
+LEGEND_LINE_RE = re.compile(r"^\d{1,2}(\s*,\s*\d{1,2})*\s+[가-힣A-Za-z]")
+LEGEND_LINE_MAX_CHARS = 60
+LEGEND_LINE_MIN_COUNT = 4
+LEGEND_PHOTO_RATIO_MIN = 0.02
 
 # Chrome regions, consistent across every body page in this manual: a running
 # section-title header at the top-left, a decorative chapter-number tab in
@@ -43,6 +60,7 @@ class ComplexityInfo:
     image_area_ratio: float
     is_diagram_page: bool
     reason: str | None
+    has_legend_photo: bool
 
 
 def _get_blocks(page: fitz.Page) -> list[Block]:
@@ -89,6 +107,15 @@ def _cluster_columns(blocks: list[Block]) -> list[list[Block]]:
     return bands
 
 
+def _has_legend_photo(blocks: list[Block], ratio: float) -> bool:
+    if ratio <= LEGEND_PHOTO_RATIO_MIN:
+        return False
+    legend_lines = sum(
+        1 for b in blocks if len(b.text) <= LEGEND_LINE_MAX_CHARS and LEGEND_LINE_RE.match(b.text)
+    )
+    return legend_lines >= LEGEND_LINE_MIN_COUNT
+
+
 def analyze_page(page: fitz.Page, pdf_page_index: int) -> ComplexityInfo:
     blocks = _get_blocks(page)
     ratio = _image_area_ratio(page)
@@ -105,6 +132,7 @@ def analyze_page(page: fitz.Page, pdf_page_index: int) -> ComplexityInfo:
         image_area_ratio=ratio,
         is_diagram_page=reason is not None,
         reason=reason,
+        has_legend_photo=_has_legend_photo(blocks, ratio),
     )
 
 
@@ -151,6 +179,11 @@ if __name__ == "__main__":
     print(f"Diagram-only pages (merged into neighbor at chunk time): {len(flagged)}/{len(results)}")
     for r in flagged:
         print(f"  page {r.pdf_page_index}: {r.reason}")
+
+    legend_photo = [r for r in results if r.has_legend_photo]
+    print(f"Pages with a legend-labeled photo (text kept, image still shown): {len(legend_photo)}/{len(results)}")
+    for r in legend_photo:
+        print(f"  page {r.pdf_page_index}: ratio {r.image_area_ratio:.0%}")
 
     out = settings.processed_dir / "page_complexity.json"
     out.parent.mkdir(parents=True, exist_ok=True)

@@ -26,7 +26,8 @@
       "Bash(python3 /tmp/test_prod_diagram.py)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:8000/health)",
       "Bash(python3 /Users/ichen22/.claude/plugins/cache/anthropic-agent-skills/example-skills/575462609294/skills/webapp-testing/scripts/with_server.py --server 'npm run dev' --port 5173 -- python3 /tmp/test_ime_and_spacing.py)",
-      "Bash(python3 /Users/ichen22/.claude/plugins/cache/anthropic-agent-skills/example-skills/575462609294/skills/webapp-testing/scripts/with_server.py --server 'npm run dev' --port 5173 -- python3 /tmp/test_spacing_only.py)"
+      "Bash(python3 /Users/ichen22/.claude/plugins/cache/anthropic-agent-skills/example-skills/575462609294/skills/webapp-testing/scripts/with_server.py --server 'npm run dev' --port 5173 -- python3 /tmp/test_spacing_only.py)",
+      "Bash(python3 -c ' *)"
     ],
     "additionalDirectories": [
       "/private/tmp",

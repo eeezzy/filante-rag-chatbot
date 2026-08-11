@@ -26,6 +26,7 @@ class PageRecord:
     text: str
     is_diagram_page: bool
     diagram_reason: str | None
+    has_legend_photo: bool
 
 
 def build_pages(pdf_path: Path) -> list[PageRecord]:
@@ -47,6 +48,7 @@ def build_pages(pdf_path: Path) -> list[PageRecord]:
                     text=text,
                     is_diagram_page=complexity.is_diagram_page,
                     diagram_reason=complexity.reason,
+                    has_legend_photo=complexity.has_legend_photo,
                 )
             )
         return records

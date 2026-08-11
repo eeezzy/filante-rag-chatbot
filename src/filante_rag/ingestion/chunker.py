@@ -38,10 +38,11 @@ class PageGroup:
     printed_page_start: int | None
     printed_page_end: int | None
     text: str
-    # pdf_page_index of any diagram-only page (see layout_text.py) among
-    # this group's own constituent pages — precise because it comes
-    # straight from the pages that built this group, not a range lookup
-    # that could pick up unrelated pages. Note: when a group gets split
+    # pdf_page_index of any page worth showing a picture of (see
+    # layout_text.py's is_diagram_page and has_legend_photo) among this
+    # group's own constituent pages — precise because it comes straight
+    # from the pages that built this group, not a range lookup that could
+    # pick up unrelated pages. Note: when a group gets split
     # into multiple chunks (see _split_on_budget), every resulting piece
     # inherits the *whole* group's diagram pages, same as they already
     # inherit the whole group's pdf_page_start/end — imprecise for the
@@ -80,7 +81,11 @@ def group_pages(pages: list[dict]) -> list[PageGroup]:
             return
         printed_pages = [p["printed_page"] for p in cur_pages if p["printed_page"] is not None]
         texts = [p["text"] for p in cur_pages if not p["is_diagram_page"] and p["text"].strip()]
-        diagram_pages = [p["pdf_page_index"] for p in cur_pages if p["is_diagram_page"]]
+        diagram_pages = [
+            p["pdf_page_index"]
+            for p in cur_pages
+            if p["is_diagram_page"] or p["has_legend_photo"]
+        ]
         groups.append(
             PageGroup(
                 chapter_num=cur_pages[0]["chapter_num"],
