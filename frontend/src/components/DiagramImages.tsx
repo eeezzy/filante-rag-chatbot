@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { CitedSource } from "../types";
 
 // Diagram pages are static and never change independent of a re-ingestion
@@ -14,18 +16,69 @@ function diagramPages(sources: CitedSource[]): { pdfPage: number; caption: strin
   return [...seen.entries()].map(([pdfPage, caption]) => ({ pdfPage, caption }));
 }
 
+function Lightbox({
+  pdfPage,
+  caption,
+  alt,
+  onClose,
+}: {
+  pdfPage: number;
+  caption: string | null;
+  alt: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  return createPortal(
+    <div className="lightbox" onClick={onClose}>
+      <figure className="lightbox__frame" onClick={(event) => event.stopPropagation()}>
+        <img src={`/manual-images/page-${pdfPage}.png`} alt={caption ?? alt} />
+        {caption && <figcaption>{caption}</figcaption>}
+      </figure>
+      <button className="lightbox__close" onClick={onClose} aria-label="Close">
+        ×
+      </button>
+    </div>,
+    document.body,
+  );
+}
+
 export function DiagramImages({ sources, alt }: { sources: CitedSource[]; alt: string }) {
   const pages = diagramPages(sources);
+  const [expanded, setExpanded] = useState<number | null>(null);
   if (pages.length === 0) return null;
+
+  const expandedPage = pages.find((p) => p.pdfPage === expanded);
 
   return (
     <div className="diagram-images">
       {pages.map(({ pdfPage, caption }) => (
         <figure className="diagram-image" key={pdfPage}>
-          <img src={`/manual-images/page-${pdfPage}.png`} alt={caption ?? alt} loading="lazy" />
+          <button
+            type="button"
+            className="diagram-image__button"
+            onClick={() => setExpanded(pdfPage)}
+            aria-label={caption ?? alt}
+          >
+            <img src={`/manual-images/page-${pdfPage}.png`} alt={caption ?? alt} loading="lazy" />
+          </button>
           {caption && <figcaption>{caption}</figcaption>}
         </figure>
       ))}
+      {expandedPage && (
+        <Lightbox
+          pdfPage={expandedPage.pdfPage}
+          caption={expandedPage.caption}
+          alt={alt}
+          onClose={() => setExpanded(null)}
+        />
+      )}
     </div>
   );
 }

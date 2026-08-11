@@ -304,13 +304,27 @@ textarea {
   border-radius: 4px;
   background: var(--surface);
   overflow: hidden;
-  max-width: 260px;
+  max-width: 380px;
 }
 
-.diagram-image img {
+.diagram-image__button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+}
+
+.diagram-image__button img {
   display: block;
   width: 100%;
   height: auto;
+  transition: opacity 0.15s ease;
+}
+
+.diagram-image__button:hover img {
+  opacity: 0.85;
 }
 
 .diagram-image figcaption {
@@ -319,6 +333,78 @@ textarea {
   color: var(--text-secondary);
   padding: 0.4rem 0.55rem;
   border-top: 1px solid var(--border);
+}
+
+/* ---------- Diagram lightbox ---------- */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  background: rgba(10, 12, 15, 0.85);
+  backdrop-filter: blur(2px);
+  animation: fade-in 0.15s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox__frame {
+  margin: 0;
+  max-width: min(90vw, 1100px);
+  max-height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.lightbox__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.lightbox__frame figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  padding: 0.6rem 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.lightbox__close {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox__close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ---------- Input bar ---------- */
@@ -388,6 +474,9 @@ textarea {
   .diagram-image {
     max-width: 100%;
   }
+  .lightbox {
+    padding: 3.5rem 0.75rem 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -400,5 +489,11 @@ textarea {
   }
   .citation-chip {
     transition: none;
+  }
+  .diagram-image__button img {
+    transition: none;
+  }
+  .lightbox {
+    animation: none;
   }
 }
