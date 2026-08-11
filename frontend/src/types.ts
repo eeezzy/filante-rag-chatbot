@@ -1,3 +1,5 @@
+export type Language = "ko" | "en";
+
 export interface CitedSource {
   number: number;
   section_title: string | null;

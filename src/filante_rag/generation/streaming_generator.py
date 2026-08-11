@@ -24,7 +24,7 @@ from filante_rag.retrieval.vector_store import SearchResult
 
 logger = logging.getLogger(__name__)
 
-_CITATION_RE = re.compile(r"\[출처\s*(\d+)\]")
+_CITATION_RE = re.compile(r"\[(?:출처|[Ss]ource)\s*(\d+)\]")
 
 
 def parse_cited_sources(text: str) -> list[int]:
@@ -32,10 +32,17 @@ def parse_cited_sources(text: str) -> list[int]:
 
 
 class StreamingGenerator:
-    def __init__(self, client: anthropic.AsyncAnthropic, model: str, system_prompt: str) -> None:
+    """`system_prompt`/label strings are passed per-call (not fixed at
+    construction) so one instance serves every language — the retriever
+    and Claude client are already language-agnostic (BGE-M3 embeddings are
+    cross-lingual, no re-indexing needed per language), so the only thing
+    that actually varies by language is which prompt pack's strings get
+    used for a given request.
+    """
+
+    def __init__(self, client: anthropic.AsyncAnthropic, model: str) -> None:
         self.client = client
         self.model = model
-        self._system_prompt = system_prompt
 
     async def stream(
         self,
@@ -43,12 +50,15 @@ class StreamingGenerator:
         sources: list[SearchResult],
         history: list[dict],
         parent_span: Any,
+        system_prompt: str,
+        sources_label: str = "출처",
+        question_label: str = "질문",
         session_id: str | None = None,
     ) -> AsyncIterator[str]:
         context = format_sources(sources)
         messages = [
             *history,
-            {"role": "user", "content": f"출처:\n{context}\n\n질문: {query}"},
+            {"role": "user", "content": f"{sources_label}:\n{context}\n\n{question_label}: {query}"},
         ]
         span = parent_span.start_observation(
             name="generation", as_type="generation", model=self.model, input=messages
@@ -59,7 +69,7 @@ class StreamingGenerator:
             async with self.client.messages.stream(
                 model=self.model,
                 max_tokens=4096,
-                system=self._system_prompt,
+                system=system_prompt,
                 messages=messages,
             ) as stream:
                 async for text in stream.text_stream:

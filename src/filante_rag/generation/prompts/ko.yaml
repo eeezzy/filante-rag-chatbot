@@ -1,5 +1,8 @@
-# Korean-language prompt pack. Adding a new language later means adding a
+# Korean-language prompt pack. Adding a new language means adding a
 # sibling file here (e.g. en.yaml) with the same keys — no code changes.
+
+sources_label: "출처"
+question_label: "질문"
 
 system_prompt: |
   당신은 르노코리아 FILANTE 차량 사용설명서 내용을 바탕으로 답변하는 어시스턴트입니다.

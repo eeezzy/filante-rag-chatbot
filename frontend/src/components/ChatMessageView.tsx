@@ -1,13 +1,22 @@
 import ReactMarkdown from "react-markdown";
-import type { ChatMessage } from "../types";
+import type { ChatMessage, Language } from "../types";
 import { CitationChip } from "./CitationChip";
+import { LOCALES } from "../locales";
 
 // The citation footer chips already surface source/page info, so the
-// inline [출처N] markers (needed server-side to parse *which* sources were
-// used) are noise in the rendered prose — strip them from what's displayed.
-const CITATION_MARKER_RE = /\[출처\s*\d+\]/g;
+// inline [출처N]/[Source N] markers (needed server-side to parse *which*
+// sources were used) are noise in the rendered prose — strip them from
+// what's displayed. Matches both languages' marker formats (see the
+// matching regex in streaming_generator.py).
+const CITATION_MARKER_RE = /\[(?:출처|[Ss]ource)\s*\d+\]/g;
 
-export function ChatMessageView({ message }: { message: ChatMessage }) {
+export function ChatMessageView({
+  message,
+  language,
+}: {
+  message: ChatMessage;
+  language: Language;
+}) {
   const isAssistant = message.role === "assistant";
   const classes = [
     "message",
@@ -23,7 +32,7 @@ export function ChatMessageView({ message }: { message: ChatMessage }) {
     <div className={classes}>
       <div className="message__bubble">
         {isAssistant && message.hasSafetyWarning && (
-          <span className="message__safety-tag">⚠ 안전 관련 안내 포함</span>
+          <span className="message__safety-tag">{LOCALES[language].safetyTag}</span>
         )}
         <div className="message__text">
           {isAssistant ? (

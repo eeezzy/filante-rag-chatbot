@@ -1,4 +1,4 @@
-import type { ChatEvent } from "./types";
+import type { ChatEvent, Language } from "./types";
 
 // Matches uvicorn's own default port, so `uvicorn ...:app --workers 1` with
 // no --port flag works against this default with zero extra config.
@@ -18,12 +18,13 @@ const API_TOKEN = import.meta.env.VITE_API_TOKEN ?? "";
 export async function* streamChat(
   message: string,
   sessionId: string | null,
+  language: Language,
   signal?: AbortSignal,
 ): AsyncGenerator<ChatEvent> {
   const response = await fetch(`${API_BASE}/chat/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-API-Key": API_TOKEN },
-    body: JSON.stringify({ message, session_id: sessionId }),
+    body: JSON.stringify({ message, session_id: sessionId, language }),
     signal,
   });
 

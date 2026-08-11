@@ -105,20 +105,22 @@ async def lifespan(app: FastAPI):
     retriever = Retriever(embedder=embedder, vector_store=vector_store)
 
     async_client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
-    prompt_pack = load_prompt_pack(lang_config.prompt_template_path)
+    # One prompt pack per configured language (see config/settings.py) —
+    # the retriever/condenser/generator below are shared across all of
+    # them; only the prompt strings vary per request.
+    prompt_packs = {
+        code: load_prompt_pack(cfg.prompt_template_path) for code, cfg in settings.languages.items()
+    }
     condenser = QueryCondenser(client=async_client)
-    generator = StreamingGenerator(
-        client=async_client,
-        model=settings.generation_model,
-        system_prompt=prompt_pack["streaming_system_prompt"],
-    )
+    generator = StreamingGenerator(client=async_client, model=settings.generation_model)
 
     app.state.pipeline = StreamingPipeline(
         retriever=retriever,
         condenser=condenser,
         generator=generator,
         session_store=ConversationStore(),
-        prompt_pack=prompt_pack,
+        prompt_packs=prompt_packs,
+        default_language=settings.default_language,
     )
     yield
     # Langfuse batches/exports traces on a background thread; flush once
@@ -165,7 +167,7 @@ async def chat_stream(req: ChatRequest) -> StreamingResponse:
         # SSE comment lines (leading ":") are ignored by clients.
         yield f": {' ' * 2048}\n\n"
         yield f"data: {json.dumps({'type': 'session', 'session_id': session_id})}\n\n"
-        async for event in pipeline.ask_stream(session_id, req.message):
+        async for event in pipeline.ask_stream(session_id, req.message, language=req.language):
             payload = {"type": event.type, "text": event.text}
             if event.type == "done":
                 payload["sources"] = [

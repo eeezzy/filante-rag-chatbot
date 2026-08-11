@@ -1,12 +1,16 @@
 import { useState, type KeyboardEvent } from "react";
+import type { Language } from "../types";
+import { LOCALES } from "../locales";
 
 interface ComposerProps {
   disabled: boolean;
+  language: Language;
   onSend: (message: string) => void;
 }
 
-export function Composer({ disabled, onSend }: ComposerProps) {
+export function Composer({ disabled, language, onSend }: ComposerProps) {
   const [value, setValue] = useState("");
+  const locale = LOCALES[language];
 
   function submit() {
     const trimmed = value.trim();
@@ -32,18 +36,18 @@ export function Composer({ disabled, onSend }: ComposerProps) {
     >
       <textarea
         className="composer__input"
-        placeholder="차량에 대해 궁금한 점을 입력하세요..."
+        placeholder={locale.placeholder}
         rows={1}
         value={value}
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={handleKeyDown}
-        aria-label="질문 입력"
+        aria-label={locale.inputLabel}
       />
       <button
         type="submit"
         className="composer__send"
         disabled={disabled || value.trim().length === 0}
-        aria-label="질문 보내기"
+        aria-label={locale.sendLabel}
       >
         →
       </button>

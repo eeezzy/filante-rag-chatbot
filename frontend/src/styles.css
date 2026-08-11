@@ -94,6 +94,35 @@ textarea {
   color: var(--text-tertiary);
 }
 
+.header__lang-toggle {
+  margin-left: auto;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.header__lang-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.header__lang-btn:hover {
+  color: var(--text-primary);
+}
+
+.header__lang-btn--active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 /* ---------- Messages ---------- */
 
 .messages {

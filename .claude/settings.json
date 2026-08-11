@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(pkill -f \"uvicorn filante_rag.api.main:app\")",
+      "Read(//tmp/**)",
+      "Read(//private/tmp/**)",
+      "Bash(tail -40 /tmp/uvicorn_lang2.log | grep -v \"^INFO:\\\\s*127\")",
+      "Bash(nohup npm run dev -- --port 5173)",
+      "Bash(echo \"pid $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5173/)",
+      "Bash(rm -f /tmp/lang_*.png)"
     ]
   }
 }

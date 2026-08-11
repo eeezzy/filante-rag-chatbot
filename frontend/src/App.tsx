@@ -3,7 +3,8 @@ import { streamChat } from "./api";
 import { Composer } from "./components/Composer";
 import { Header } from "./components/Header";
 import { ChatMessageView } from "./components/ChatMessageView";
-import type { ChatMessage } from "./types";
+import type { ChatMessage, Language } from "./types";
+import { LOCALES } from "./locales";
 import "./styles.css";
 
 let nextId = 0;
@@ -12,7 +13,9 @@ const newId = () => `msg-${nextId++}`;
 export default function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [language, setLanguage] = useState<Language>("ko");
   const sessionIdRef = useRef<string | null>(null);
+  const locale = LOCALES[language];
 
   function updateLast(patch: Partial<ChatMessage>) {
     setMessages((prev) => {
@@ -43,7 +46,7 @@ export default function App() {
     setIsStreaming(true);
 
     try {
-      for await (const event of streamChat(text, sessionIdRef.current)) {
+      for await (const event of streamChat(text, sessionIdRef.current, language)) {
         if (event.type === "session") {
           sessionIdRef.current = event.session_id;
         } else if (event.type === "delta") {
@@ -65,7 +68,7 @@ export default function App() {
     } catch (err) {
       console.error("[App] handleSend error:", err);
       updateLast({
-        text: "연결 중 오류가 발생했습니다. 잠시 후 다시 시도해 주십시오.",
+        text: locale.connectionError,
         isStreaming: false,
       });
     } finally {
@@ -75,20 +78,23 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header language={language} onLanguageChange={setLanguage} />
       <div className="messages">
         {messages.length === 0 && (
           <p className="messages__empty">
-            FILANTE 차량 사용설명서 내용을 바탕으로 답변합니다.
-            <br />
-            궁금한 점을 자유롭게 물어보세요.
+            {locale.emptyState.split("\n").map((line, i) => (
+              <span key={i}>
+                {i > 0 && <br />}
+                {line}
+              </span>
+            ))}
           </p>
         )}
         {messages.map((message) => (
-          <ChatMessageView key={message.id} message={message} />
+          <ChatMessageView key={message.id} message={message} language={language} />
         ))}
       </div>
-      <Composer disabled={isStreaming} onSend={handleSend} />
+      <Composer disabled={isStreaming} language={language} onSend={handleSend} />
     </div>
   );
 }

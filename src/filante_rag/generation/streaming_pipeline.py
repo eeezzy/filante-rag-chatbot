@@ -59,12 +59,21 @@ class StreamingPipeline:
     condenser: QueryCondenser
     generator: StreamingGenerator
     session_store: ConversationStore
-    prompt_pack: dict
+    # Keyed by language code (see config/settings.py's `languages`), not a
+    # single fixed dict — the retriever/condenser/generator are already
+    # language-agnostic (shared Claude client, cross-lingual embeddings),
+    # so per-request language support is *only* a matter of picking which
+    # prompt pack's strings to use for that request.
+    prompt_packs: dict[str, dict]
+    default_language: str = "ko"
 
     async def ask_stream(
-        self, session_id: str, message: str, top_k: int = 5
+        self, session_id: str, message: str, language: str | None = None, top_k: int = 5
     ) -> AsyncIterator[StreamEvent]:
         request_start = time.monotonic()
+        prompt_pack = self.prompt_packs.get(
+            language or self.default_language, self.prompt_packs[self.default_language]
+        )
         root_span = langfuse_client.start_observation(
             name="chat_request",
             as_type="span",
@@ -128,7 +137,7 @@ class StreamingPipeline:
                         "dense_relevance_score": retrieval.dense_relevance_score,
                     },
                 )
-                answer = self.prompt_pack["no_context_message"].strip()
+                answer = prompt_pack["no_context_message"].strip()
                 yield StreamEvent(type="delta", text=answer)
                 self.session_store.append(session_id, "user", message)
                 self.session_store.append(session_id, "assistant", answer)
@@ -145,7 +154,14 @@ class StreamingPipeline:
             parts: list[str] = []
             try:
                 async for delta in self.generator.stream(
-                    standalone_query, results, history, root_span, session_id=session_id
+                    standalone_query,
+                    results,
+                    history,
+                    root_span,
+                    system_prompt=prompt_pack["streaming_system_prompt"],
+                    sources_label=prompt_pack["sources_label"],
+                    question_label=prompt_pack["question_label"],
+                    session_id=session_id,
                 ):
                     parts.append(delta)
                     yield StreamEvent(type="delta", text=delta)
@@ -155,7 +171,7 @@ class StreamingPipeline:
                 logger.exception(
                     "generation_failed", extra={"event": "generation_failed", "session_id": session_id}
                 )
-                error_text = self.prompt_pack["error_message"].strip()
+                error_text = prompt_pack["error_message"].strip()
                 root_span.update(output=error_text, level="ERROR")
                 yield StreamEvent(type="delta", text=error_text)
                 yield StreamEvent(type="done", text=error_text)
@@ -163,7 +179,7 @@ class StreamingPipeline:
 
             full_text = "".join(parts)
             if warning:
-                disclaimer = self.prompt_pack["safety_disclaimer"]
+                disclaimer = prompt_pack["safety_disclaimer"]
                 yield StreamEvent(type="delta", text=disclaimer)
                 full_text += disclaimer
 

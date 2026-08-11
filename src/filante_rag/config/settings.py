@@ -86,9 +86,18 @@ class Settings(BaseSettings):
                 prompt_template_path=prompts_dir / "ko.yaml",
                 system_locale="ko-KR",
             ),
-            # Add "en": LanguageConfig(...) here to extend — no other
-            # pipeline code needs to change; retrieval stays cross-lingual
-            # because the embedding model above is multilingual.
+            # Same embedding_model as "ko" — the underlying index is never
+            # re-embedded per language. BGE-M3 is cross-lingual, so an
+            # English query already retrieves the right Korean chunks
+            # against the *same* collection; only the prompt pack (which
+            # instructs Claude to read Korean sources, write English
+            # answers) differs.
+            "en": LanguageConfig(
+                code="en",
+                embedding_model="BAAI/bge-m3",
+                prompt_template_path=prompts_dir / "en.yaml",
+                system_locale="en-US",
+            ),
         }
 
     @property
