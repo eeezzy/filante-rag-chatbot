@@ -11,7 +11,11 @@
       "Bash(nohup npm run dev -- --port 5173)",
       "Bash(echo \"pid $!\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5173/)",
-      "Bash(rm -f /tmp/lang_*.png)"
+      "Bash(rm -f /tmp/lang_*.png)",
+      "Bash(rm -f /tmp/final_en_prod.png *)"
+    ],
+    "additionalDirectories": [
+      "/private/tmp"
     ]
   }
 }

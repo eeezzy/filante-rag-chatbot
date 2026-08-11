@@ -145,12 +145,6 @@ class StreamingPipeline:
                 yield StreamEvent(type="done", text=answer)
                 return
 
-            # Computed from all *retrieved* sources, not just cited ones —
-            # we don't know citations until the stream finishes, and
-            # erring toward showing the disclaimer is the safer default
-            # for a vehicle manual.
-            warning = any_safety_warning(results)
-
             parts: list[str] = []
             try:
                 async for delta in self.generator.stream(
@@ -178,6 +172,20 @@ class StreamingPipeline:
                 return
 
             full_text = "".join(parts)
+
+            # Based on what the answer actually *cited*, not everything
+            # retrieval happened to surface — checking all retrieved
+            # chunks (the original approach) meant an unrelated warning
+            # elsewhere in the same section (e.g. asking how to turn on
+            # the AC, retrieving a nearby chunk that also contains a
+            # "don't block the vents" caution the answer never mentions)
+            # would still trigger the disclaimer. That's not "safer", it's
+            # crying wolf — the disclaimer stops meaning anything once it
+            # shows up on ordinary questions too.
+            cited_numbers = [n for n in parse_cited_sources(full_text) if 1 <= n <= len(results)]
+            cited_results = [results[n - 1] for n in cited_numbers]
+            warning = any_safety_warning(cited_results)
+
             if warning:
                 disclaimer = prompt_pack["safety_disclaimer"]
                 yield StreamEvent(type="delta", text=disclaimer)
@@ -189,12 +197,11 @@ class StreamingPipeline:
             cited_sources = [
                 CitedSource(
                     number=n,
-                    section_title=results[n - 1].payload.get("section_title"),
-                    printed_page_start=results[n - 1].payload.get("printed_page_start"),
-                    printed_page_end=results[n - 1].payload.get("printed_page_end"),
+                    section_title=r.payload.get("section_title"),
+                    printed_page_start=r.payload.get("printed_page_start"),
+                    printed_page_end=r.payload.get("printed_page_end"),
                 )
-                for n in parse_cited_sources(full_text)
-                if 1 <= n <= len(results)
+                for n, r in zip(cited_numbers, cited_results)
             ]
             root_span.update(
                 output=full_text,
