@@ -13,8 +13,8 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
         FILANTE<span>.</span>
       </span>
       <span className="header__subtitle">{LOCALES[language].subtitle}</span>
-      <div className="header__lang-toggle" role="group" aria-label="Language / 언어">
-        {(["ko", "en"] as const).map((code) => (
+      <div className="header__lang-toggle" role="group" aria-label="Language / 언어 / Langue">
+        {(["ko", "en", "fr"] as const).map((code) => (
           <button
             key={code}
             type="button"
@@ -22,7 +22,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             onClick={() => onLanguageChange(code)}
             aria-pressed={language === code}
           >
-            {code === "ko" ? "한국어" : "EN"}
+            {code === "ko" ? "한국어" : code === "en" ? "EN" : "FR"}
           </button>
         ))}
       </div>

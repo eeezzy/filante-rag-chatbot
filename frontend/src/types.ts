@@ -1,4 +1,4 @@
-export type Language = "ko" | "en";
+export type Language = "ko" | "en" | "fr";
 
 export interface CitedSource {
   number: number;

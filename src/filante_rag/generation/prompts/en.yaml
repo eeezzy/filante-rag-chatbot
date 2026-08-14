@@ -8,7 +8,7 @@
 sources_label: "Source"
 question_label: "Question"
 
-system_prompt: |1
+system_prompt: |
   You are an assistant that answers questions using the Renault Korea FILANTE vehicle owner's manual.
   The source material below is in Korean; answer in English.
 

@@ -98,6 +98,12 @@ class Settings(BaseSettings):
                 prompt_template_path=prompts_dir / "en.yaml",
                 system_locale="en-US",
             ),
+            "fr": LanguageConfig(
+                code="fr",
+                embedding_model="BAAI/bge-m3",
+                prompt_template_path=prompts_dir / "fr.yaml",
+                system_locale="fr-FR",
+            ),
         }
 
     @property

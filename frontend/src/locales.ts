@@ -35,4 +35,14 @@ export const LOCALES: Record<Language, Locale> = {
     connectionError: "A connection error occurred. Please try again in a moment.",
     diagramAlt: "Manual diagram",
   },
+  fr: {
+    subtitle: "Assistant du manuel du véhicule",
+    emptyState: "Les réponses reposent sur le manuel du propriétaire FILANTE.\nPosez toutes vos questions sur votre véhicule.",
+    placeholder: "Posez une question sur votre véhicule...",
+    inputLabel: "Saisie de la question",
+    sendLabel: "Envoyer la question",
+    safetyTag: "⚠ Contient des consignes de sécurité",
+    connectionError: "Une erreur de connexion s'est produite. Veuillez réessayer dans un instant.",
+    diagramAlt: "Schéma du manuel",
+  },
 };
